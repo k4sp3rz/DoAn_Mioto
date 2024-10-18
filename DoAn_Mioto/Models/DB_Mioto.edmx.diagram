@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="dacd73177c9f44de8e94fb70233e51cb" Name="Diagram1" ZoomLevel="83">
+        <EntityTypeShape EntityType="DB_MiotoAModel.ChuXe" Width="1.5" PointX="2.875" PointY="1.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="DB_MiotoAModel.DanhGia" Width="1.5" PointX="2.75" PointY="9.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="DB_MiotoAModel.DoanhThu" Width="1.5" PointX="5.625" PointY="1.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="DB_MiotoAModel.DonThueXe" Width="1.5" PointX="0.5" PointY="6.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="DB_MiotoAModel.KhachHang" Width="1.5" PointX="0.5" PointY="1.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="DB_MiotoAModel.MaGiamGia" Width="1.5" PointX="5.5" PointY="8.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="DB_MiotoAModel.NhanVien" Width="1.5" PointX="8" PointY="1.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="DB_MiotoAModel.PhiHuyChuyen" Width="1.5" PointX="0.5" PointY="10.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="DB_MiotoAModel.Xe" Width="1.5" PointX="3" PointY="4.625" IsExpanded="true" />
+        <AssociationConnector Association="DB_MiotoAModel.FK__ChuXe__IDKH__267ABA7A" ManuallyRouted="false" />
+        <AssociationConnector Association="DB_MiotoAModel.FK__DoanhThu__IDCX__34C8D9D1" ManuallyRouted="false" />
+        <AssociationConnector Association="DB_MiotoAModel.FK__Xe__IDCX__29572725" ManuallyRouted="false" />
+        <AssociationConnector Association="DB_MiotoAModel.FK__DanhGia__IDDT__38996AB5" ManuallyRouted="false" />
+        <AssociationConnector Association="DB_MiotoAModel.FK__DoanhThu__IDNV__35BCFE0A" ManuallyRouted="false" />
+        <AssociationConnector Association="DB_MiotoAModel.FK__DonThueXe__BienS__31EC6D26" ManuallyRouted="false" />
+        <AssociationConnector Association="DB_MiotoAModel.FK__DonThueXe__IDKH__300424B4" ManuallyRouted="false" />
+        <AssociationConnector Association="DB_MiotoAModel.FK__DonThueXe__IDMGG__30F848ED" ManuallyRouted="false" />
+        <AssociationConnector Association="DB_MiotoAModel.FK__PhiHuyChuy__IDDT__3B75D760" ManuallyRouted="false" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>
