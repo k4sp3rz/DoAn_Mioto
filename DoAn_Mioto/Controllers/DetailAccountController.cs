@@ -18,10 +18,6 @@ namespace DoAn_Mioto.Controllers
         DB_MiotoAEntities db = new DB_MiotoAEntities();
         public bool IsLoggedIn { get => Session["KhachHang"] != null || Session["ChuXe"] != null; }
         private static readonly HttpClient client = new HttpClient();
-        private KhachHang GetKhachHangById(int IDKH)
-        {
-            return db.KhachHang.FirstOrDefault(x => x.IDKH == IDKH);
-        }
 
         List<SelectListItem> tinhThanhPho = new List<SelectListItem>
         {
@@ -83,13 +79,13 @@ namespace DoAn_Mioto.Controllers
         // POST: EditGPLX/InfoAccount
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult EditCCCD(KhachHang khachHang)
+        public ActionResult EditCCCD(KhachHang cccd)
         {
             if (!IsLoggedIn)
                 return RedirectToAction("Login", "Home");
 
             // Lấy bản ghi KhachHang dựa trên IDKH
-            var guest = db.KhachHang.FirstOrDefault(x => x.IDKH == khachHang.IDKH);
+            var guest = db.KhachHang.FirstOrDefault(x => x.IDKH == cccd.IDKH);
 
             try
             {
@@ -98,7 +94,7 @@ namespace DoAn_Mioto.Controllers
                     // Cập nhật thông tin CCCD trong KhachHang
                     if (guest != null)
                     {
-                        guest.CCCD = khachHang.CCCD;
+                        guest.CCCD = cccd.CCCD;
                         db.Entry(guest).State = EntityState.Modified;
                         db.SaveChanges();
                     }
@@ -118,11 +114,11 @@ namespace DoAn_Mioto.Controllers
 
                     return RedirectToAction("InfoAccount");
                 }
-                return View();
+                return View(cccd);
             }
             catch
             {
-                return View();
+                return View(cccd);
             }
         }
 
@@ -145,13 +141,13 @@ namespace DoAn_Mioto.Controllers
         // POST: EditGPLX/InfoAccount
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult EditGPLX(KhachHang khachHang)
+        public ActionResult EditGPLX(KhachHang gplx)
         {
             if (!IsLoggedIn)
-                RedirectToAction("Login", "Home");
+                return RedirectToAction("Login", "Home");
 
             // Lấy khách hàng từ cơ sở dữ liệu dựa trên IDKH
-            var guest = GetKhachHangById(khachHang.IDKH);
+            var guest = db.KhachHang.FirstOrDefault(x => x.IDKH == gplx.IDKH);
 
             try
             {
@@ -160,7 +156,7 @@ namespace DoAn_Mioto.Controllers
                     // Cập nhật thông tin GPLX trong KhachHang
                     if (guest != null)
                     {
-                        guest.GPLX = khachHang.GPLX; // Giả định trường GPLX trong KhachHang
+                        guest.GPLX = gplx.GPLX; // Giả định trường GPLX trong KhachHang
                         db.Entry(guest).State = EntityState.Modified;
                         db.SaveChanges();
                     }
@@ -180,12 +176,11 @@ namespace DoAn_Mioto.Controllers
 
                     return RedirectToAction("InfoAccount");
                 }
-                return View();
+                return View(gplx);
             }
             catch
             {
-                ModelState.AddModelError("", "An error occurred while updating the driver's license. Please try again.");
-                return View();
+                return View(gplx);
             }
         }
 
