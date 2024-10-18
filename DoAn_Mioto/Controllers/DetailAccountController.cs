@@ -190,82 +190,70 @@ namespace DoAn_Mioto.Controllers
         }
 
 
-        // GET: EditInfoUser/InfoAccount
+        // GET: DetailAccount/EditInfoUser
         public ActionResult EditInfoUser(int IDKH)
         {
             if (!IsLoggedIn)
+            {
                 return RedirectToAction("Login", "Account");
+            }
 
-            // Lấy thông tin khách hàng dựa trên IDKH
-            var khachHang = db.KhachHang.FirstOrDefault(x => x.IDKH == IDKH);
+            var khachHang = GetKhachHangById(IDKH);
             if (khachHang == null)
+            {
                 return HttpNotFound();
+            }
 
-            // Cài đặt ViewBag.GioiTinh để chọn giới tính
-            ViewBag.GioiTinh = new SelectList(new[] { "Nam", "Nữ", "Khác" }, khachHang.GioiTinh);
+            // Populate the gender options for the dropdown list
+            ViewBag.GioiTinh = gioitinh;
             return View(khachHang);
         }
 
-        // POST: EditInfoUser/InfoAccount
+        // POST: DetailAccount/EditInfoUser
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult EditInfoUser(KhachHang kh)
+        public ActionResult EditInfoUser(KhachHang khachHang)
         {
             if (!IsLoggedIn)
-                return RedirectToAction("Login", "Home");
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
+            var guest = GetKhachHangById(khachHang.IDKH);
+            if (guest == null)
+            {
+                return HttpNotFound();
+            }
 
             try
             {
                 if (ModelState.IsValid)
                 {
-                    // Lấy thông tin khách hàng và chủ xe từ session
-                    var guest = Session["KhachHang"] as KhachHang;
-                    var chuxe = Session["ChuXe"] as ChuXe;
+                    guest.Ten = khachHang.Ten;
+                    guest.GioiTinh = khachHang.GioiTinh;
+                    guest.DiaChi = khachHang.DiaChi;
+                    guest.SDT = khachHang.SDT;
+                    guest.NgaySinh = khachHang.NgaySinh;
 
-                    // Cập nhật thông tin cần thiết từ session vào đối tượng khách hàng
-                    kh.GPLX = guest.GPLX;
-                    kh.MatKhau = guest.MatKhau;
-                    kh.CCCD = guest.CCCD;
-                    kh.HinhAnh = guest.HinhAnh;
-
-                    // Cập nhật thông tin khách hàng trong cơ sở dữ liệu
-                    db.Entry(kh).State = EntityState.Modified;
+                    db.Entry(guest).State = EntityState.Modified;
                     db.SaveChanges();
 
-                    // Cập nhật thông tin GPLX nếu tồn tại
-                    if (!string.IsNullOrEmpty(guest.GPLX))
-                    {
-                        var existingKhachHang = db.KhachHang.FirstOrDefault(x => x.IDKH == kh.IDKH);
-                        if (existingKhachHang != null)
-                        {
-                            existingKhachHang.Ten = kh.Ten;
-                            existingKhachHang.NgaySinh = kh.NgaySinh;
-                            existingKhachHang.DiaChi = kh.DiaChi;
-                            existingKhachHang.SDT = kh.SDT;
-                            existingKhachHang.GioiTinh = kh.GioiTinh;
-                            existingKhachHang.Email = kh.Email;
-                            db.Entry(existingKhachHang).State = EntityState.Modified;
-                            db.SaveChanges();
-                        }
-                    }
-
-                    // Cập nhật lại thông tin trong session
-                    guest = db.KhachHang.FirstOrDefault(x => x.IDKH == guest.IDKH);
-                    chuxe = db.ChuXe.FirstOrDefault(x => x.IDCX == guest.IDKH);
+                    // Update session information
                     Session["KhachHang"] = guest;
-                    Session["ChuXe"] = chuxe;
 
-                    // Điều hướng về trang thông tin tài khoản
                     return RedirectToAction("InfoAccount");
                 }
-
-                return View(kh);
             }
-            catch
+            catch (Exception ex)
             {
-                return View(kh);
+                ModelState.AddModelError("", "Đã xảy ra lỗi khi cập nhật thông tin: " + ex.Message);
             }
+
+            // Repopulate the gender options for the dropdown list in case of errors
+            ViewBag.GioiTinh = gioitinh;
+            return View(khachHang);
         }
+
 
 
         // GET: Detailt/MyCar
