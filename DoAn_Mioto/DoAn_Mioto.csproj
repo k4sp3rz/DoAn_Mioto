@@ -51,13 +51,29 @@
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
+    <Reference Include="Google.Apis, Version=1.68.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.1.68.0\lib\net462\Google.Apis.dll</HintPath>
+    </Reference>
+    <Reference Include="Google.Apis.Auth, Version=1.68.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.Auth.1.68.0\lib\net462\Google.Apis.Auth.dll</HintPath>
+    </Reference>
+    <Reference Include="Google.Apis.Calendar.v3, Version=1.68.0.3557, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.Calendar.v3.1.68.0.3557\lib\net462\Google.Apis.Calendar.v3.dll</HintPath>
+    </Reference>
+    <Reference Include="Google.Apis.Core, Version=1.68.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.Core.1.68.0\lib\net462\Google.Apis.Core.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform, Version=2.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\lib\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
+    <Reference Include="System.CodeDom, Version=7.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.CodeDom.7.0.0\lib\net462\System.CodeDom.dll</HintPath>
+    </Reference>
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Management" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Security" />
     <Reference Include="System.Web.DynamicData" />
@@ -130,6 +146,7 @@
     <Compile Include="Controllers\CarController.cs" />
     <Compile Include="Controllers\DetailAccountController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\PaymentController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -166,12 +183,14 @@
     <Compile Include="Models\MaGiamGia.cs">
       <DependentUpon>DB_Mioto.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\MD_BookingCar.cs" />
     <Compile Include="Models\MD_ChangePassword.cs" />
     <Compile Include="Models\MD_ChuXe.cs" />
     <Compile Include="Models\MD_CustomerDetails.cs" />
     <Compile Include="Models\MD_Login.cs" />
     <Compile Include="Models\MD_MyTrip.cs" />
     <Compile Include="Models\MD_OwnerDetailt.cs" />
+    <Compile Include="Models\MD_Payment.cs" />
     <Compile Include="Models\MD_Register.cs" />
     <Compile Include="Models\MD_RentedCar.cs" />
     <Compile Include="Models\MD_Xe.cs" />
@@ -283,6 +302,11 @@
     <Content Include="Views\DetailAccount\EditInfoUser.cshtml" />
     <Content Include="Views\DetailAccount\ChangePassword.cshtml" />
     <Content Include="Views\DetailAccount\RentedCar.cshtml" />
+    <Content Include="Views\Payment\Alert.cshtml" />
+    <Content Include="Views\Payment\BookingCar.cshtml" />
+    <Content Include="Views\Payment\CongratulationPaymentDone.cshtml" />
+    <Content Include="Views\Payment\InfoCar.cshtml" />
+    <Content Include="Views\Payment\Payment.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
