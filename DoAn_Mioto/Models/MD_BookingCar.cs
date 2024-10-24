@@ -1,10 +1,14 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DoAn_Mioto.Models
 {
     public class MD_BookingCar
     {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int IDTX { get; set; }
         // Đơn thuê xe
         [Required(ErrorMessage = "Ngày thuê là bắt buộc")]
         [DataType(DataType.Date)]

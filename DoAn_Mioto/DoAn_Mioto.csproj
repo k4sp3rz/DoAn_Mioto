@@ -143,6 +143,7 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Controllers\CarController.cs" />
     <Compile Include="Controllers\DetailAccountController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
@@ -307,6 +308,13 @@
     <Content Include="Views\Payment\CongratulationPaymentDone.cshtml" />
     <Content Include="Views\Payment\InfoCar.cshtml" />
     <Content Include="Views\Payment\Payment.cshtml" />
+    <Content Include="Views\Admin\AddDiscount.cshtml" />
+    <Content Include="Views\Admin\AdminPaymentVerification.cshtml" />
+    <Content Include="Views\Admin\EditDiscount.cshtml" />
+    <Content Include="Views\Admin\InfoAccount.cshtml" />
+    <Content Include="Views\Admin\ListCarsInSystem.cshtml" />
+    <Content Include="Views\Admin\ManagerDiscount.cshtml" />
+    <Content Include="Views\Admin\RentedCompany.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

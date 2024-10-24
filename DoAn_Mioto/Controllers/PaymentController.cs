@@ -101,13 +101,13 @@ namespace Mioto.Controllers
                 // Tạo đơn thuê xe
                 var donThueXe = new DonThueXe
                 {
-                    IDKH = khachHang.IDKH,
-                    BienSo = bookingCar.Xe.BienSo,
                     NgayThue = bookingCar.NgayThue,
                     NgayTra = bookingCar.NgayTra,
-                    TrangThaiThanhToan = 1, 
+                    TrangThaiThanhToan = 1,
+                    TongTien = bookingCar.Xe.GiaThue * (bookingCar.NgayTra - bookingCar.NgayThue).Days,
                     PhanTramHoaHong = 10,
-                    TongTien = bookingCar.Xe.GiaThue * (bookingCar.NgayTra - bookingCar.NgayThue).Days
+                    IDKH = khachHang.IDKH,
+                    BienSo = bookingCar.Xe.BienSo,
                 };
 
                 // Thêm đơn thuê xe vào cơ sở dữ liệu
