@@ -427,7 +427,114 @@ namespace Mioto.Controllers
 
             return View(model);
         }
+        public ActionResult ManagerEmployee()
+        {
+            return View(db.NhanVien.ToList());
+        }
 
+        // GET: NhanVien/Details/5
+        public ActionResult DetailsEmployee(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            NhanVien nhanVien = db.NhanVien.Find(id);
+            if (nhanVien == null)
+            {
+                return HttpNotFound();
+            }
+            return View(nhanVien);
+        }
+
+        // GET: NhanVien/Create
+        public ActionResult CreateEmployee()
+        {
+            return View();
+        }
+
+        // POST: NhanVien/Create
+        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
+        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult CreateEmployee([Bind(Include = "IDNV,Ten,Email,DiaChi,NgaySinh,HinhAnh,ChucVu,GioiTinh,SDT,MatKhau")] NhanVien nhanVien)
+        {
+            if (ModelState.IsValid)
+            {
+                db.NhanVien.Add(nhanVien);
+                db.SaveChanges();
+                return RedirectToAction("ManagerEmployee");
+            }
+
+            return View(nhanVien);
+        }
+
+        // GET: NhanVien/Edit/5
+        public ActionResult EditEmployee(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            NhanVien nhanVien = db.NhanVien.Find(id);
+            if (nhanVien == null)
+            {
+                return HttpNotFound();
+            }
+            return View(nhanVien);
+        }
+
+        // POST: NhanVien/Edit/5
+        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
+        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult EditEmployee([Bind(Include = "IDNV,Ten,Email,DiaChi,NgaySinh,HinhAnh,ChucVu,GioiTinh,SDT,MatKhau")] NhanVien nhanVien)
+        {
+            if (ModelState.IsValid)
+            {
+                db.Entry(nhanVien).State = EntityState.Modified;
+                db.SaveChanges();
+                return RedirectToAction("ManagerEmployee");
+            }
+            return View(nhanVien);
+        }
+
+        // GET: NhanVien/Delete/5
+        public ActionResult DeleteEmployee(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            NhanVien nhanVien = db.NhanVien.Find(id);
+            if (nhanVien == null)
+            {
+                return HttpNotFound();
+            }
+            return View(nhanVien);
+        }
+
+        // POST: NhanVien/Delete/5
+        [HttpPost, ActionName("DeleteEmployee")]
+        [ValidateAntiForgeryToken]
+        public ActionResult DeleteConfirmed(int id)
+        {
+            NhanVien nhanVien = db.NhanVien.Find(id);
+            db.NhanVien.Remove(nhanVien);
+            db.SaveChanges();
+            return RedirectToAction("ManagerEmployee");
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                db.Dispose();
+            }
+            base.Dispose(disposing);
+        }
 
     }
 }

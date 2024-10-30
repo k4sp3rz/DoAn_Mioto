@@ -1,0 +1,103 @@
+﻿@model IEnumerable<DoAn_Mioto.Models.NhanVien>
+@{
+    ViewBag.Title = "ManagerEmployee";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+<link href="~/Content/css/table.css" rel="stylesheet" />
+<style>
+    .btn-create {
+        background-color: #5FCF86;
+        color: #fff;
+        padding: 5px 10px;
+        text-decoration: none;
+        border-radius: 5px;
+    }
+
+    .btn-edit {
+        background-color: #5FCF86;
+        color: white;
+        padding: 5px 10px;
+        text-decoration: none;
+        border-radius: 5px;
+    }
+
+    .btn-delete {
+        background-color: red;
+        color: #fff;
+        padding: 5px 10px;
+        text-decoration: none;
+        border-radius: 5px;
+    }
+
+    .btn {
+        display: inline-block;
+        margin: 0 5px;
+        border: 0;
+    }
+
+    .btn:hover {
+        opacity: 0.8;
+    }
+
+    .create-new-container {
+        text-align: right;
+    }
+
+    h2 {
+        text-align: center;
+        font-family: Manrope;
+    }
+    th {
+        color: #000000;
+        font-weight: bold;
+    }
+</style>
+
+<h2>Quản lí nhân viên</h2>
+<div class="create-new-container">
+    @Html.ActionLink("Create New", "CreateEmployee", null, new { @class = "btn btn-create" })
+</div>
+<table class="table">
+    <tr>
+        <th>
+            Tên
+        </th>
+        <th>
+            Email
+        </th>
+        <th>
+            Chức vụ
+        </th>
+        <th>
+            Mật khẩu
+        </th>
+        <th>
+            Hành động<br />
+        </th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Ten)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Email)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ChucVu)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.MatKhau)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "EditEmployee", new { id = item.IDNV }, new { @class = "btn btn-edit" }) |
+                @Html.ActionLink("Details", "DetailsEmployee", new { id = item.IDNV }, new { @class = "btn btn-edit" }) |
+                @Html.ActionLink("Delete", "DeleteEmployee", new { id = item.IDNV }, new { @class = "btn btn-delete" })
+            </td>
+        </tr>
+    }
+</table>
+
+
