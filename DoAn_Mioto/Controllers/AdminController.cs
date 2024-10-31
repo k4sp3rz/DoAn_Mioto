@@ -18,7 +18,7 @@ namespace Mioto.Controllers
     {
 
         DB_MiotoAEntities db = new DB_MiotoAEntities();
-        public bool IsLoggedIn { get => Session["NhanVien"] != null;}
+        public bool IsLoggedIn { get => Session["NhanVien"] != null; }
 
         // GET: Admin
         public ActionResult AdminPaymentVerification()
@@ -363,7 +363,7 @@ namespace Mioto.Controllers
                     decimal hoaHong = thanhToan.TongTien * (donThueXe.PhanTramHoaHong / 100);
 
                     // Xác định thời gian của giao dịch
-                    var ngayGiaoDich = thanhToan.NgayTra; 
+                    var ngayGiaoDich = thanhToan.NgayTra;
                     var tuanGiaoDich = CultureInfo.CurrentCulture.Calendar.GetWeekOfYear(ngayGiaoDich, CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday);
                     var thangGiaoDich = ngayGiaoDich.Month;
                     var namGiaoDich = ngayGiaoDich.Year;
@@ -534,6 +534,17 @@ namespace Mioto.Controllers
                 db.Dispose();
             }
             base.Dispose(disposing);
+        }
+
+
+        // GET: ChuXe
+        public ActionResult ManagerOwner()
+        {
+            //Lấy danh sách các khách hàng là chủ xe
+            var chuXeList = db.ChuXe.Include(cx => cx.KhachHang).ToList();
+
+
+            return View(chuXeList);
         }
 
     }

@@ -275,17 +275,17 @@ namespace DoAn_Mioto.Controllers
         }
 
         // GET: EditCar/MyCar
-        public ActionResult EditCar(string BienSoXe)
+        public ActionResult EditCar(string BienSo)
         {
             if (!IsLoggedIn)
                 return RedirectToAction("Login", "Account");
             ViewBag.TinhThanhPho = tinhThanhPho;
             ViewBag.TrangThaiXe = TrangThaiXe;
-            if (String.IsNullOrEmpty(BienSoXe))
+            if (String.IsNullOrEmpty(BienSo))
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            var xe = db.Xe.FirstOrDefault(x => x.BienSo == BienSoXe);
+            var xe = db.Xe.FirstOrDefault(x => x.BienSo == BienSo);
             if (xe == null)
             {
                 return HttpNotFound();
@@ -320,7 +320,19 @@ namespace DoAn_Mioto.Controllers
                 return View(xe);
             }
         }
-
+        //POST: DeleteCar/MyCar
+        [HttpPost]
+        public JsonResult DeleteCar(string BienSoXe)
+        {
+            var car = db.Xe.SingleOrDefault(x => x.BienSo == BienSoXe);
+            if (car != null)
+            {
+                db.Xe.Remove(car);
+                db.SaveChanges();
+                return Json(new { success = true });
+            }
+            return Json(new { success = false });
+        }
 
         public ActionResult MyTrip()
         {
@@ -677,7 +689,7 @@ namespace DoAn_Mioto.Controllers
                 NgayThue = donthuexe.NgayThue,
                 NgayTra = donthuexe.NgayTra,
                 TongTien = donthuexe.TongTien,
-               // TrangThai = donthuexe.TrangThaiThanhToan,
+                // TrangThai = donthuexe.TrangThaiThanhToan,
                 ChuXe = chuxe
             };
 
