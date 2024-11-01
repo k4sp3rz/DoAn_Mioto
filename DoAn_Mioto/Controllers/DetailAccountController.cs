@@ -46,7 +46,7 @@ namespace DoAn_Mioto.Controllers
         };
 
 
-        List<SelectListItem> TrangThaiXe = new List<SelectListItem>
+        List<SelectListItem> trangThaiXe = new List<SelectListItem>
         {
          new SelectListItem { Text = "Sẵn sàng", Value = "Sẵn sàng" },
          new SelectListItem { Text = "Bảo trì", Value = "Bảo trì" },
@@ -275,17 +275,17 @@ namespace DoAn_Mioto.Controllers
         }
 
         // GET: EditCar/MyCar
-        public ActionResult EditCar(string BienSo)
+        public ActionResult EditCar(string BienSoXe)
         {
             if (!IsLoggedIn)
                 return RedirectToAction("Login", "Account");
             ViewBag.TinhThanhPho = tinhThanhPho;
-            ViewBag.TrangThaiXe = TrangThaiXe;
-            if (String.IsNullOrEmpty(BienSo))
+            ViewBag.TrangThaiXe = trangThaiXe;
+            if (String.IsNullOrEmpty(BienSoXe))
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            var xe = db.Xe.FirstOrDefault(x => x.BienSo == BienSo);
+            var xe = db.Xe.FirstOrDefault(x => x.BienSo == BienSoXe);
             if (xe == null)
             {
                 return HttpNotFound();
@@ -302,8 +302,10 @@ namespace DoAn_Mioto.Controllers
                 return RedirectToAction("Login", "Account");
             }
             ViewBag.TinhThanhPho = tinhThanhPho;
+            ViewBag.TrangThaiXe = trangThaiXe;
             try
             {
+                Console.WriteLine(ModelState.IsValid.ToString());
                 if (ModelState.IsValid)
                 {
                     var guest = Session["KhachHang"] as KhachHang;

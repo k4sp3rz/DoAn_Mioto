@@ -137,6 +137,7 @@
                         </div>
                         <div class="wrap-input">
                             @Html.DropDownListFor(model => model.TrangThaiThue, (IEnumerable<SelectListItem>)ViewBag.TrangThaiXe, "Chọn...", new { @class = "form-control", style = "font-size: 16px; width: 100%;" })
+
                             @Html.ValidationMessageFor(model => model.TrangThaiThue, "", new { @class = "text-danger" })
                         </div>
                     </div>
