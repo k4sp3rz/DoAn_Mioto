@@ -66,7 +66,6 @@
     </Reference>
     <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform, Version=2.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\lib\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll</HintPath>
-      <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
@@ -240,7 +239,10 @@
     <Content Include="Image\download-google.png" />
     <Content Include="Image\FP9y_5Lg454RArfyqFjPeg.jpg" />
     <Content Include="Image\GkVnASnGWKFbIkT6EH3N8Q.jpg" />
+    <Content Include="Image\icon chủ xe.png" />
     <Content Include="Image\icon-qlnhanvien.png" />
+    <Content Include="Image\icon-TrangThai.png" />
+    <Content Include="Image\icons8-BienSo.png" />
     <Content Include="Image\intro-image.png" />
     <Content Include="Image\logo-mioto.png" />
     <Content Include="Image\SDFAW8Q.jpg" />
@@ -323,6 +325,9 @@
     <Content Include="Views\Admin\DeleteEmployee.cshtml" />
     <Content Include="Views\Admin\DetailsEmployee.cshtml" />
     <Content Include="Views\Admin\EditEmployee.cshtml" />
+    <Content Include="Views\Admin\ManagerOwner.cshtml" />
+    <Content Include="Views\DetailAccount\MyCar.cshtml" />
+    <Content Include="Views\DetailAccount\RequestDeleteAccount.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

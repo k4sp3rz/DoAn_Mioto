@@ -1,0 +1,96 @@
+﻿@model IEnumerable<DoAn_Mioto.Models.ChuXe>
+
+@{
+    ViewBag.Title = "Quản Lý Chủ Xe";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<link href="~/Content/css/table.css" rel="stylesheet" />
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<style>
+    h2 {
+        text-align: center;
+        font-family: Manrope;
+    }
+
+    th {
+        color: white;
+    }
+
+    .delete-button {
+        background-color: red;
+        color: white;
+        border: none;
+        padding: 5px 10px;
+        cursor: pointer;
+        border-radius: 5px;
+        text-decoration: none;
+    }
+
+        .delete-button:hover {
+            background-color: darkred;
+        }
+</style>
+
+<h2>Danh Sách Chủ Xe</h2>
+
+<div id="message"></div>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>ID Chủ Xe</th>
+            <th>Họ và tên</th>
+            <th>Ngày sinh</th>
+            <th>Giới tính</th>
+            <th>Địa Chỉ</th>
+            <th>Email</th>
+            <th>Số điện thoại</th>
+            <th>Hành động</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var chuXe in Model)
+        {
+            <tr id="row-@chuXe.IDCX">
+                <td>@chuXe.IDCX</td>
+                <td>@chuXe.KhachHang.Ten</td>
+                <td>@chuXe.KhachHang.NgaySinh.ToString("dd/MM/yyyy")</td>
+                <td>@chuXe.KhachHang.GioiTinh</td>
+                <td>@chuXe.KhachHang.DiaChi</td>
+                <td>@chuXe.KhachHang.Email</td>
+                <td>@chuXe.KhachHang.SDT</td>
+                <td>
+                    <button class="delete-button" data-id="@chuXe.IDCX">Xóa</button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<script>
+    $(document).ready(function() {
+        $('.delete-button').click(function() {
+            var id = $(this).data('id');
+            if (confirm('Bạn có chắc chắn muốn xóa chủ xe này?')) {
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("Delete", "Admin")',
+                    data: { id: id },
+                    success: function(response) {
+                        if (response.success) {
+                            $('#row-' + id).remove();
+                            $('#message').html('<div class="alert alert-success">' + response.message + '</div>');
+                        } else {
+                            $('#message').html('<div class="alert alert-danger">' + response.message + '</div>');
+                        }
+                    },
+                    error: function() {
+                        $('#message').html('<div class="alert alert-danger">Có lỗi xảy ra khi xóa chủ xe.</div>');
+                    }
+                });
+            }
+        });
+    });
+</script>
