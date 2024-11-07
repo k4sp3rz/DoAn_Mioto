@@ -108,6 +108,7 @@ namespace Mioto.Controllers
                     PhanTramHoaHong = 10,
                     IDKH = khachHang.IDKH,
                     BienSo = bookingCar.Xe.BienSo,
+                    IDMGG = null
                 };
 
                 // Thêm đơn thuê xe vào cơ sở dữ liệu
@@ -161,135 +162,138 @@ namespace Mioto.Controllers
             // Truyền thông tin thanh toán tới View để hiển thị form thanh toán
             return View(thanhToan);
         }
-
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Payment(MD_Payment thanhToan)
-        {
-            if (!IsLoggedIn)
-                return RedirectToAction("Login", "Account");
-
-            if (ModelState.IsValid)
-            {
-                // Tìm mã giảm giá (nếu có)
-                MaGiamGia maGiamGia = null;
-                if (!string.IsNullOrEmpty(thanhToan.MaGiamGia))
-                {
-                    maGiamGia = db.MaGiamGia.FirstOrDefault(m => m.MaGG == thanhToan.MaGiamGia);
-                }
-
-                // Tìm đơn thuê xe
-                var donThueXe = db.DonThueXe.FirstOrDefault(t => t.IDTX == thanhToan.IDDT);
-                if (donThueXe == null)
-                {
-                    ModelState.AddModelError("", "Không tìm thấy đơn thuê xe.");
-                    return View(thanhToan);
-                }
-
-                // Tính toán số tiền thanh toán
-                var soTien = donThueXe.TongTien;
-                if (maGiamGia != null)
-                {
-                    // Áp dụng giảm giá
-                    soTien = thanhToan.SoTien;
-                    if (soTien < 0) soTien = 0;
-                    donThueXe.TongTien = soTien;
-
-                    db.Entry(donThueXe).State = EntityState.Modified;
-                    db.SaveChanges();
-                }
-
-                // Cập nhật thanh toán trong cơ sở dữ liệu
-                var existingThanhToan = db.ThanhToan.FirstOrDefault(t => t.IDTT == thanhToan.IDTT);
-                if (existingThanhToan != null)
-                {
-                    existingThanhToan.TrangThai = "Đã thanh toán";
-                    existingThanhToan.SoTien = soTien;
-                    existingThanhToan.NgayTT = DateTime.Now;
-                    db.Entry(existingThanhToan).State = EntityState.Modified;
-                    db.SaveChanges();
-                }
-                else
-                {
-                    if (maGiamGia != null)
-                    {
-                        var newThanhToan = new ThanhToan
-                        {
-                            NgayTT = thanhToan.NgayTT,
-                            TrangThai = "Chờ xét duyệt",
-                            PhuongThuc = thanhToan.PhuongThuc,
-                            IDDT = donThueXe.IDDT,
-                            SoTien = thanhToan.SoTien,
-                            IDMGG = maGiamGia.IDMGG,
-                        };
-                        db.ThanhToan.Add(newThanhToan);
-                        db.SaveChanges();
-                    }
-                    else
-                    {
-                        var newThanhToan = new ThanhToan
-                        {
-                            NgayTT = thanhToan.NgayTT,
-                            TrangThai = "Chờ xét duyệt",
-                            PhuongThuc = thanhToan.PhuongThuc,
-                            IDDT = donThueXe.IDDT,
-                            SoTien = thanhToan.SoTien,
-                        };
-                        db.ThanhToan.Add(newThanhToan);
-                        db.SaveChanges();
-                    }
-                }
-                return View("CongratulationPaymentDone");
-            }
-            return RedirectToAction("Home", "Home");
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public JsonResult ApplyDiscount(string discountCode, decimal SoTien)
-        {
-            var khachhang = Session["KhachHang"] as KhachHang;
-            var donThueXe = db.DonThueXe.FirstOrDefault(t => t.IDKH == khachhang.IDKH);
-
-            var discount = db.MaGiamGia.FirstOrDefault(m => m.Ma == discountCode);
-
-            if (discount == null)
-            {
-                return Json(new { success = false, message = "Mã giảm giá không đúng." });
-            }
-            else if (discount.SoLanSuDung <= 0)
-            {
-                return Json(new { success = false, message = "Mã giảm giá đã hết lần sử dụng." });
-            }
-            else if (discount.NgayKetThuc < DateTime.Now)
-            {
-                return Json(new { success = false, message = "Mã giảm giá đã hết hạn sử dụng." });
-            }
-            else
-            {
-                var hasUsedCode = db.ThanhToan.Any(t => t.IDMGG == discount.IDMGG && t.IDDT == donThueXe.IDDT);
-                if (hasUsedCode)
-                {
-                    return Json(new { success = false, message = "Bạn đã sử dụng mã giảm giá này." });
-                }
-
-                discount.SoLanSuDung--;
-                db.Entry(discount).State = EntityState.Modified;
-                db.SaveChanges();
-
-                var discountedAmount = SoTien - (SoTien * discount.PhanTramGiam / 100);
-                if (discountedAmount < 0) discountedAmount = 0;
-
-                return Json(new { success = true, discountedAmount = discountedAmount.ToString("N0") });
-            }
-        }
-
-        public ActionResult CongratulationPaymentDone()
-        {
-            if (!IsLoggedIn)
-                return RedirectToAction("Login", "Account");
-            return View();
-        }
     }
 }
+
+
+
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public ActionResult Payment(MD_Payment thanhToan)
+        //{
+        //    if (!IsLoggedIn)
+        //        return RedirectToAction("Login", "Account");
+
+        //    if (ModelState.IsValid)
+        //    {
+        //        // Tìm mã giảm giá (nếu có)
+        //        MaGiamGia maGiamGia = null;
+        //        if (!string.IsNullOrEmpty(thanhToan.MaGiamGia))
+        //        {
+        //            maGiamGia = db.MaGiamGia.FirstOrDefault(m => m.MaGG == thanhToan.MaGiamGia);
+        //        }
+
+        //        // Tìm đơn thuê xe
+        //        var donThueXe = db.DonThueXe.FirstOrDefault(t => t.IDTX == thanhToan.IDDT);
+        //        if (donThueXe == null)
+        //        {
+        //            ModelState.AddModelError("", "Không tìm thấy đơn thuê xe.");
+        //            return View(thanhToan);
+        //        }
+
+        //        // Tính toán số tiền thanh toán
+        //        var soTien = donThueXe.TongTien;
+        //        if (maGiamGia != null)
+        //        {
+        //            // Áp dụng giảm giá
+        //            soTien = thanhToan.SoTien;
+        //            if (soTien < 0) soTien = 0;
+        //            donThueXe.TongTien = soTien;
+
+        //            db.Entry(donThueXe).State = EntityState.Modified;
+        //            db.SaveChanges();
+        //        }
+
+            //    // Cập nhật thanh toán trong cơ sở dữ liệu
+            //    var existingThanhToan = db.ThanhToan.FirstOrDefault(t => t.IDTT == thanhToan.IDTT);
+            //    if (existingThanhToan != null)
+            //    {
+            //        existingThanhToan.TrangThai = "Đã thanh toán";
+            //        existingThanhToan.SoTien = soTien;
+            //        existingThanhToan.NgayTT = DateTime.Now;
+            //        db.Entry(existingThanhToan).State = EntityState.Modified;
+            //        db.SaveChanges();
+            //    }
+            //    else
+            //    {
+            //        if (maGiamGia != null)
+            //        {
+            //            var newThanhToan = new ThanhToan
+            //            {
+            //                NgayTT = thanhToan.NgayTT,
+            //                TrangThai = "Chờ xét duyệt",
+            //                PhuongThuc = thanhToan.PhuongThuc,
+            //                IDDT = donThueXe.IDDT,
+            //                SoTien = thanhToan.SoTien,
+            //                IDMGG = maGiamGia.IDMGG,
+            //            };
+            //            db.ThanhToan.Add(newThanhToan);
+            //            db.SaveChanges();
+            //        }
+            //        else
+            //        {
+            //            var newThanhToan = new ThanhToan
+            //            {
+            //                NgayTT = thanhToan.NgayTT,
+            //                TrangThai = "Chờ xét duyệt",
+            //                PhuongThuc = thanhToan.PhuongThuc,
+            //                IDDT = donThueXe.IDDT,
+            //                SoTien = thanhToan.SoTien,
+            //            };
+            //            db.ThanhToan.Add(newThanhToan);
+            //            db.SaveChanges();
+            //        }
+            //    }
+            //    return View("CongratulationPaymentDone");
+            //}
+            //return RedirectToAction("Home", "Home");
+        //}
+
+//        [HttpPost]
+//        [ValidateAntiForgeryToken]
+//        public JsonResult ApplyDiscount(string discountCode, decimal SoTien)
+//        {
+//            var khachhang = Session["KhachHang"] as KhachHang;
+//            var donThueXe = db.DonThueXe.FirstOrDefault(t => t.IDKH == khachhang.IDKH);
+
+//            var discount = db.MaGiamGia.FirstOrDefault(m => m.Ma == discountCode);
+
+//            if (discount == null)
+//            {
+//                return Json(new { success = false, message = "Mã giảm giá không đúng." });
+//            }
+//            else if (discount.SoLanSuDung <= 0)
+//            {
+//                return Json(new { success = false, message = "Mã giảm giá đã hết lần sử dụng." });
+//            }
+//            else if (discount.NgayKetThuc < DateTime.Now)
+//            {
+//                return Json(new { success = false, message = "Mã giảm giá đã hết hạn sử dụng." });
+//            }
+//            else
+//            {
+//                var hasUsedCode = db.ThanhToan.Any(t => t.IDMGG == discount.IDMGG && t.IDDT == donThueXe.IDDT);
+//                if (hasUsedCode)
+//                {
+//                    return Json(new { success = false, message = "Bạn đã sử dụng mã giảm giá này." });
+//                }
+
+//                discount.SoLanSuDung--;
+//                db.Entry(discount).State = EntityState.Modified;
+//                db.SaveChanges();
+
+//                var discountedAmount = SoTien - (SoTien * discount.PhanTramGiam / 100);
+//                if (discountedAmount < 0) discountedAmount = 0;
+
+//                return Json(new { success = true, discountedAmount = discountedAmount.ToString("N0") });
+//            }
+//        }
+
+//        public ActionResult CongratulationPaymentDone()
+//        {
+//            if (!IsLoggedIn)
+//                return RedirectToAction("Login", "Account");
+//            return View();
+//        }
+//    }
+//}

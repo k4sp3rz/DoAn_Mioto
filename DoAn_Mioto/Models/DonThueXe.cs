@@ -28,7 +28,7 @@ namespace DoAn_Mioto.Models
         public decimal TongTien { get; set; }
         public decimal PhanTramHoaHong { get; set; }
         public int IDKH { get; set; }
-        public int IDMGG { get; set; }
+        public int? IDMGG { get; set; }
         public string BienSo { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
