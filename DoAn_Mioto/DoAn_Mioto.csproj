@@ -328,6 +328,7 @@
     <Content Include="Views\Admin\ManagerOwner.cshtml" />
     <Content Include="Views\DetailAccount\MyCar.cshtml" />
     <Content Include="Views\DetailAccount\RequestDeleteAccount.cshtml" />
+    <Content Include="Views\DetailAccount\MyTrip.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
