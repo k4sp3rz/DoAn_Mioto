@@ -162,6 +162,12 @@ namespace Mioto.Controllers
             // Truyền thông tin thanh toán tới View để hiển thị form thanh toán
             return View(thanhToan);
         }
+        public ActionResult CongratulationPaymentDone()
+        {
+            if (!IsLoggedIn)
+                return RedirectToAction("Login", "Account");
+            return View();
+        }
     }
 }
 

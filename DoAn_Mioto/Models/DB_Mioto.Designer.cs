@@ -1,4 +1,4 @@
-﻿// T4 code generation is enabled for model 'C:\Users\DELL\Downloads\DoAn_Mioto\DoAn_Mioto\DoAn_Mioto\Models\DB_Mioto.edmx'. 
+﻿// T4 code generation is enabled for model 'C:\Users\tinga\OneDrive\Máy tính\DoAn-Mioto\DoAn_Mioto\Models\DB_Mioto.edmx'. 
 // To enable legacy code generation, change the value of the 'Code Generation Strategy' designer
 // property to 'Legacy ObjectContext'. This property is available in the Properties Window when the model
 // is open in the designer.

@@ -240,7 +240,6 @@ namespace DoAn_Mioto.Controllers
 
                     // Update session information
                     Session["KhachHang"] = guest;
-
                     return RedirectToAction("InfoAccount");
                 }
             }
@@ -361,8 +360,8 @@ namespace DoAn_Mioto.Controllers
                         NgayThue = dtx.NgayThue,
                         NgayTra = dtx.NgayTra,
                         TongTien = dtx.TongTien,
-                        //TrangThai = dtx.TrangThaiThanhToan == 1 ? "Đã thanh toán" : "Chưa thanh toán",
-                        //ThanhToan = db.ThanhToan.FirstOrDefault(x => x.IDTX == dtx.IDTX),
+                        TrangThai = dtx.TrangThaiThanhToan == 1 ? 1 : 0,
+                        ThanhToan = db.DonThueXe.FirstOrDefault(x => x.IDTX == dtx.IDTX),
                         ChuXe = db.ChuXe.FirstOrDefault(cx => cx.IDCX == db.Xe.FirstOrDefault(e => e.BienSo == dtx.BienSo).IDCX),
                     }).ToList();
             }
@@ -379,8 +378,8 @@ namespace DoAn_Mioto.Controllers
                         NgayThue = dtx.NgayThue,
                         NgayTra = dtx.NgayTra,
                         TongTien = dtx.TongTien,
-                        //TrangThai = dtx.TrangThaiThanhToan == 1 ? "Đã thanh toán" : "Chưa thanh toán",
-                        //ThanhToan = db.ThanhToan.FirstOrDefault(x => x.IDTX == dtx.IDTX),
+                        TrangThai = dtx.TrangThaiThanhToan == 1 ? 1 : 0,
+                        ThanhToan = db.DonThueXe.FirstOrDefault(x => x.IDTX == dtx.IDTX),
                         ChuXe = db.ChuXe.FirstOrDefault(cx => cx.IDCX == chuxe.IDCX)
                     }).ToList();
             }
@@ -483,7 +482,6 @@ namespace DoAn_Mioto.Controllers
 
                     // Lưu file lên server
                     avatar.SaveAs(path);
-
                     // Cập nhật thông tin hình ảnh của khách hàng trong cơ sở dữ liệu
                     var guest = Session["KhachHang"] as KhachHang;
                     var existingKH = db.KhachHang.Find(guest.IDKH);
@@ -583,30 +581,30 @@ namespace DoAn_Mioto.Controllers
                 //    MoTa = "Hủy chuyến do khách hàng yêu cầu."
                 //};
 
-                //db.PhiHuyChuyen.Add(phiHuyChuyen);
+                // db.PhiHuyChuyen.Add(phiHuyChuyen);
             }
             else
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest, "Người dùng không hợp lệ");
             }
 
+            // Cập nhật trạng thái chuyến đi
+            donThueXe.TrangThaiThanhToan = 2; // Hủy chuyến (Đã hủy)
+            db.Entry(donThueXe).State = EntityState.Modified;
+
+            // Xóa đơn thuê xe và thanh toán nếu cần
+            var thanhtoan = db.DonThueXe.FirstOrDefault(x => x.IDTX == donThueXe.IDTX);
+            if (thanhtoan != null)
+            {
+                db.DonThueXe.Remove(thanhtoan);
+            }
+
+            // Lưu tất cả thay đổi trong một lần
             db.SaveChanges();
-
-            // Xóa đơn thanh toán
-            //var thanhtoan = db.ThanhToan.FirstOrDefault(x => x.IDDT == donThueXe.IDDT);
-            //if (thanhtoan != null)
-            //{
-            //    db.ThanhToan.Remove(thanhtoan);
-            //    db.SaveChanges();
-            //}
-
-            //// Xóa đơn thuê xe
-            //donThueXe.TrangThai = 2;
-            //db.Entry(donThueXe).State = EntityState.Modified;
-            //db.SaveChanges();
 
             return RedirectToAction("MyTrip");
         }
+
         // GET: RentedCar
         public ActionResult RentedCar()
         {
@@ -631,7 +629,7 @@ namespace DoAn_Mioto.Controllers
                         NgayThue = d.NgayThue,
                         NgayTra = d.NgayTra,
                         TongTien = d.TongTien,
-                        //TrangThai = d.TrangThaiThanhToan // Sử dụng TrangThaiThanhToan từ DonThueXe
+                        TrangThai = d.TrangThaiThanhToan // Sử dụng TrangThaiThanhToan từ DonThueXe
                     }).ToList();
 
                 return View(rentedCars);
@@ -658,7 +656,7 @@ namespace DoAn_Mioto.Controllers
                     NgayThue = d.NgayThue,
                     NgayTra = d.NgayTra,
                     TongTien = d.TongTien,
-                    //TrangThai = d.TrangThaiThanhToan,
+                    TrangThai = d.TrangThaiThanhToan,
                     KhachHang = d.KhachHang
                 })
                 .FirstOrDefault();
@@ -691,7 +689,7 @@ namespace DoAn_Mioto.Controllers
                 NgayThue = donthuexe.NgayThue,
                 NgayTra = donthuexe.NgayTra,
                 TongTien = donthuexe.TongTien,
-                // TrangThai = donthuexe.TrangThaiThanhToan,
+                TrangThai = donthuexe.TrangThaiThanhToan,
                 ChuXe = chuxe
             };
 
@@ -761,18 +759,18 @@ namespace DoAn_Mioto.Controllers
 
             db.SaveChanges();
 
-            //// Xóa đơn thanh toán
-            //var thanhtoan = db.ThanhToan.FirstOrDefault(x => x.IDDT == donThueXe.IDDT);
-            //if (thanhtoan != null)
-            //{
-            //    db.ThanhToan.Remove(thanhtoan);
-            //    db.SaveChanges();
-            //}
+            // Xóa đơn thanh toán
+            var thanhtoan = db.DonThueXe.FirstOrDefault(x => x.IDTX == donThueXe.IDTX);
+            if (thanhtoan != null)
+            {
+                db.DonThueXe.Remove(thanhtoan);
+                db.SaveChanges();
+            }
 
-            //// Xóa đơn thuê xe
-            //donThueXe.TrangThaiThanhToan = 2; // Hủy
-            //db.Entry(donThueXe).State = EntityState.Modified;
-            //db.SaveChanges();
+            // Xóa đơn thuê xe
+            donThueXe.TrangThaiThanhToan = 2; // Hủy
+            db.Entry(donThueXe).State = EntityState.Modified;
+            db.SaveChanges();
 
             return RedirectToAction("RentedCar");
         }
@@ -818,6 +816,16 @@ namespace DoAn_Mioto.Controllers
             };
 
             return View(viewModel);
+        }
+
+
+        // GET: Owner
+        public ActionResult OwnerPaymentVerification()
+        {
+            if (!IsLoggedIn)
+                return RedirectToAction("Login", "Account");
+            var ds_thanhtoan = db.DonThueXe.ToList();
+            return View(ds_thanhtoan);
         }
     }
 }
