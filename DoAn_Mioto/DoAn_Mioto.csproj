@@ -330,6 +330,7 @@
     <Content Include="Views\DetailAccount\RequestDeleteAccount.cshtml" />
     <Content Include="Views\DetailAccount\MyTrip.cshtml" />
     <Content Include="Views\DetailAccount\OwnerDetailt.cshtml" />
+    <Content Include="Views\DetailAccount\OwnerPaymentVerification.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

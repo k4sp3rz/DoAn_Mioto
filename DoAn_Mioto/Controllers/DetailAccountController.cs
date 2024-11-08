@@ -240,6 +240,7 @@ namespace DoAn_Mioto.Controllers
 
                     // Update session information
                     Session["KhachHang"] = guest;
+
                     return RedirectToAction("InfoAccount");
                 }
             }
@@ -482,6 +483,7 @@ namespace DoAn_Mioto.Controllers
 
                     // Lưu file lên server
                     avatar.SaveAs(path);
+
                     // Cập nhật thông tin hình ảnh của khách hàng trong cơ sở dữ liệu
                     var guest = Session["KhachHang"] as KhachHang;
                     var existingKH = db.KhachHang.Find(guest.IDKH);
@@ -759,17 +761,17 @@ namespace DoAn_Mioto.Controllers
 
             db.SaveChanges();
 
-            // Xóa đơn thanh toán
-            var thanhtoan = db.DonThueXe.FirstOrDefault(x => x.IDTX == donThueXe.IDTX);
-            if (thanhtoan != null)
-            {
-                db.DonThueXe.Remove(thanhtoan);
-                db.SaveChanges();
-            }
+            //// Xóa đơn thanh toán
+            //var thanhtoan = db.DonThueXe.FirstOrDefault(x => x.IDTX == donThueXe.IDTX);
+            //if (thanhtoan != null)
+            //{
+            //    db.DonThueXe.Remove(thanhtoan);
+            //    db.SaveChanges();
+            //}
 
             // Xóa đơn thuê xe
             donThueXe.TrangThaiThanhToan = 2; // Hủy
-            db.Entry(donThueXe).State = EntityState.Modified;
+            db.Entry(donThueXe.TrangThaiThanhToan).State = EntityState.Modified;
             db.SaveChanges();
 
             return RedirectToAction("RentedCar");

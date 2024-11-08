@@ -30,7 +30,8 @@ namespace DoAn_Mioto.Models
         public int IDKH { get; set; }
         public int? IDMGG { get; set; }
         public string BienSo { get; set; }
-    
+        public Nullable<System.DateTime> NgayTT { get; set; }
+
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<DanhGia> DanhGia { get; set; }
         public virtual Xe Xe { get; set; }
