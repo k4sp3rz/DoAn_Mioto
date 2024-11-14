@@ -148,6 +148,7 @@
     <Compile Include="Controllers\CarController.cs" />
     <Compile Include="Controllers\DetailAccountController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\OAuthController.cs" />
     <Compile Include="Controllers\PaymentController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -202,6 +203,7 @@
     <Compile Include="Models\PhiHuyChuyen.cs">
       <DependentUpon>DB_Mioto.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\TripReview.cs" />
     <Compile Include="Models\Xe.cs">
       <DependentUpon>DB_Mioto.tt</DependentUpon>
     </Compile>
@@ -331,10 +333,14 @@
     <Content Include="Views\DetailAccount\MyTrip.cshtml" />
     <Content Include="Views\DetailAccount\OwnerDetailt.cshtml" />
     <Content Include="Views\DetailAccount\OwnerPaymentVerification.cshtml" />
+    <Content Include="Views\Payment\TripReview.cshtml" />
+    <Content Include="Views\Account\VerifyOtp.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="CarImages\" />
+    <Folder Include="Views\Auth\" />
+    <Folder Include="Views\OAuth\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap.rtl.min.css.map" />

@@ -113,7 +113,7 @@ namespace Mioto.Controllers
                     PhanTramHoaHong = 10,
                     IDKH = khachHang.IDKH,
                     BienSo = bookingCar.Xe.BienSo,
-                    IDMGG = null
+                    IDMGG = 0
                 };
 
                 // Thêm đơn thuê xe vào cơ sở dữ liệu
@@ -264,5 +264,46 @@ namespace Mioto.Controllers
             return View();
         }
 
+        // Phương thức để hiển thị trang đánh giá chuyến đi
+        public ActionResult TripReview(string bienSo)
+        {
+            // Truyền thông tin xe vào ViewBag để hiển thị trong form (nếu cần)
+            ViewBag.BienSo = bienSo;
+
+            // Trả về view với model DanhGia
+            return View(new DanhGia());
+        }
+
+        // Phương thức xử lý khi người dùng gửi đánh giá
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult SubmitReview(DanhGia review)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    // Thêm đánh giá vào cơ sở dữ liệu
+                    review.Ngay = DateTime.Now; // Gán ngày giờ hiện tại cho đánh giá
+                    db.DanhGia.Add(review);
+                    db.SaveChanges();
+
+                    // Chuyển hướng đến một trang thông báo sau khi thành công
+                    TempData["SuccessMessage"] = "Đánh giá của bạn đã được gửi thành công!";
+                    return RedirectToAction("Home", "Home");
+                }
+                catch (Exception ex)
+                {
+                    // Xử lý lỗi nếu có
+                    TempData["ErrorMessage"] = "Đã xảy ra lỗi khi gửi đánh giá. Vui lòng thử lại.";
+                    return View("TripReview", review);
+                }
+            }
+
+            // Nếu model không hợp lệ, trả về lại view với thông báo lỗi
+            return View("TripReview", review);
+        }
     }
+
 }
+

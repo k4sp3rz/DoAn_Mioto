@@ -1,0 +1,134 @@
+﻿@{
+    ViewBag.Title = "TripReview";
+    Layout = "~/Views/Shared/_LayoutBase.cshtml";
+}
+@model DoAn_Mioto.Models.DanhGia
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4;
+        margin: 0;
+        padding: 0;
+    }
+
+    h2 {
+        color: #333;
+        text-align: center;
+        margin-top: 20px;
+    }
+
+    form {
+        background-color: white;
+        padding: 20px;
+        max-width: 600px;
+        margin: 30px auto;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    label {
+        font-weight: bold;
+        color: #555;
+        display: block;
+        margin-bottom: 5px;
+    }
+
+    textarea {
+        width: 100%;
+        height: 150px;
+        padding: 10px;
+        margin-bottom: 15px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        resize: vertical;
+    }
+
+    select {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 15px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
+
+    button {
+        background-color: #5fcf86;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+        width: 100%;
+    }
+
+        button:hover {
+            background-color: #4bbf75;
+        }
+
+    .alert {
+        margin-bottom: 20px;
+        padding: 10px;
+        border-radius: 5px;
+        font-size: 16px;
+    }
+
+    .alert-success {
+        background-color: #d4edda;
+        color: #155724;
+    }
+
+    .alert-danger {
+        background-color: #f8d7da;
+        color: #721c24;
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+    }
+</style>
+
+<h2>Đánh giá chuyến đi</h2>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["SuccessMessage"]
+    </div>
+}
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">
+        @TempData["ErrorMessage"]
+    </div>
+}
+
+<!-- Form gửi đánh giá -->
+@using (Html.BeginForm("SubmitReview", "Payment", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-group">
+        <label for="NoiDung">Nội dung đánh giá: </label>
+        @Html.TextAreaFor(m => m.NoiDung, new { @class = "form-control", rows = 4, placeholder = "Chia sẻ cảm nhận của bạn về trải nghiệm dịch vụ thuê xe của chúng tôi!" })
+        @Html.ValidationMessageFor(m => m.NoiDung, "", new { @class = "text-danger" })
+    </div>
+
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary">Gửi đánh giá</button>
+    </div>
+}
+
+<script>
+    // Client-side validation (optional)
+    $(document).ready(function () {
+        $("form").submit(function (e) {
+            var content = $("textarea[name='NoiDung']").val().trim(); // Đảm bảo lấy giá trị textarea đúng
+            if (!content) {
+                alert("Vui lòng nhập nội dung đánh giá.");
+                e.preventDefault(); // Ngừng gửi form nếu không có nội dung
+            }
+        });
+    });
+</script>

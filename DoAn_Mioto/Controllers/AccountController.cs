@@ -2,6 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Mail;
+using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Security;
@@ -70,7 +72,6 @@ namespace DoAn_Mioto.Controllers
             ViewBag.GioiTinh = gioitinh;
             return View();
         }
-
         // POST: Account/Register
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -81,34 +82,19 @@ namespace DoAn_Mioto.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    // Check if the email is already registered
                     if (db.KhachHang.Any(x => x.Email == kh.Email))
                     {
                         ModelState.AddModelError("Email", "Email đã tồn tại. Vui lòng sử dụng email khác.");
                         return View(kh);
                     }
 
-                    // Create new KhachHang object and set default values for CCCD and GPLX
-                    var newKhachHang = new KhachHang
-                    {
-                        Ten = kh.Ten,
-                        Email = kh.Email,
-                        GioiTinh = kh.GioiTinh,
-                        DiaChi = kh.DiaChi,
-                        SDT = kh.SDT,
-                        GPLX = kh.GPLX ?? "No",
-                        NgaySinh = kh.NgaySinh,
-                        MatKhau = kh.MatKhau,
-                        CCCD = kh.CCCD ?? "No",
-                        HinhAnh = kh.HinhAnh
-                    };
+                    var otp = new Random().Next(100000, 999999).ToString();
+                    Session["OTP"] = otp;
+                    Session["RegisterInfo"] = kh;
 
-                    // Add and save the new KhachHang record
-                    db.KhachHang.Add(newKhachHang);
-                    db.SaveChanges();
+                    SendOtpEmail(kh.Email, otp);
 
-                    TempData["Message"] = "Đăng ký thành công!";
-                    return RedirectToAction("Login");
+                    return RedirectToAction("VerifyOtp");
                 }
                 return View(kh);
             }
@@ -117,6 +103,72 @@ namespace DoAn_Mioto.Controllers
                 ViewBag.ErrorRegister = "Đăng ký không thành công. Vui lòng thử lại.";
                 return View(kh);
             }
+        }
+
+        private void SendOtpEmail(string email, string otp)
+        {
+            var fromAddress = new MailAddress("sydang2296@gmail.com", "Mioto");
+            var toAddress = new MailAddress(email);
+            const string fromPassword = "oopz vicm xvmn dinl​";
+            const string subject = "Mã xác thực đăng ký tài khoản";
+            string body = $"Mã xác thực của bạn là: {otp}";
+
+            var smtp = new SmtpClient
+            {
+                Host = "smtp.gmail.com",
+                Port = 587,
+                EnableSsl = true,
+                DeliveryMethod = SmtpDeliveryMethod.Network,
+                UseDefaultCredentials = false,
+                Credentials = new NetworkCredential(fromAddress.Address, fromPassword)
+            };
+            using (var message = new MailMessage(fromAddress, toAddress)
+            {
+                Subject = subject,
+                Body = body
+            })
+            {
+                smtp.Send(message);
+            }
+        }
+
+        public ActionResult VerifyOtp()
+        {
+
+
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult VerifyOtp(string otp)
+        {
+            var sessionOtp = Session["OTP"]?.ToString();
+            var registerInfo = Session["RegisterInfo"] as MD_Register;
+
+            if (otp == sessionOtp && registerInfo != null)
+            {
+                var newKhachHang = new KhachHang
+                {
+                    Ten = registerInfo.Ten,
+                    Email = registerInfo.Email,
+                    GioiTinh = registerInfo.GioiTinh,
+                    DiaChi = registerInfo.DiaChi,
+                    SDT = registerInfo.SDT,
+                    GPLX = "0",
+                    NgaySinh = registerInfo.NgaySinh,
+                    MatKhau = registerInfo.MatKhau,
+                    CCCD = "0"
+                };
+                db.KhachHang.Add(newKhachHang);
+                db.SaveChanges();
+
+                TempData["Message"] = "Đăng ký thành công!";
+                return RedirectToAction("Login");
+            }
+
+            ModelState.AddModelError("OTP", "Mã xác thực không đúng.");
+            return View();
         }
 
         //GET : Home/Logout
