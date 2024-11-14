@@ -108,12 +108,12 @@ namespace Mioto.Controllers
                 {
                     NgayThue = bookingCar.NgayThue,
                     NgayTra = bookingCar.NgayTra,
-                    TrangThaiThanhToan = 1,
+                    TrangThaiThanhToan = 0,
                     TongTien = bookingCar.Xe.GiaThue * (bookingCar.NgayTra - bookingCar.NgayThue).Days,
                     PhanTramHoaHong = 10,
                     IDKH = khachHang.IDKH,
                     BienSo = bookingCar.Xe.BienSo,
-                    IDMGG = 0
+                    IDMGG = null
                 };
 
                 // Thêm đơn thuê xe vào cơ sở dữ liệu
@@ -202,7 +202,8 @@ namespace Mioto.Controllers
                     if (soTien < 0) soTien = 0;
                     donThueXe.TongTien = soTien;
 
-                    db.Entry(donThueXe).State = EntityState.Modified;
+                    //db.Entry(donThueXe).State = EntityState.Modified;
+                    db.DonThueXe.Add(donThueXe);
                     db.SaveChanges();
                 }
 
@@ -211,10 +212,34 @@ namespace Mioto.Controllers
                                                   //donThueXe.NgayTT = DateTime.Now;
                 db.Entry(donThueXe).State = EntityState.Modified;
                 db.SaveChanges();
-
-                return View("CongratulationPaymentDone");
+                Session["DonThueXe"] = donThueXe;
+                return RedirectToAction("QRPayment", "Payment");
             }
             return RedirectToAction("Home", "Home");
+        }
+
+        public ActionResult QRPayment()
+        {
+            if (!IsLoggedIn)
+                return RedirectToAction("Login", "Account");
+
+            var donthuexe = Session["DonThueXe"] as DonThueXe;
+            var info = new Dictionary<string, string>
+            {
+                {"BANK_ID", "MB" },
+                {"ACCOUNT_NO", "0932175716" },
+                {"OWNER", "Nguyen Huu Phuoc" }
+            };
+            var tongtien = Convert.ToInt32(donthuexe.TongTien);
+            var random = new Random();
+            var randomLetters = new string(Enumerable.Repeat("ABCDEFGHIJKLMNOPQRSTUVWXYZ", 4)
+                .Select(s => s[random.Next(s.Length)]).ToArray());
+
+            var paidContent = $"MIOTO{donthuexe.IDTX}{randomLetters}";
+            string QR = $"https://img.vietqr.io/image/{info["BANK_ID"]}-{info["ACCOUNT_NO"]}-compact2.png?amount={tongtien}&addInfo={paidContent}&accountName={Uri.EscapeDataString(info["OWNER"])}";
+            ViewBag.QRCodeUrl = QR;
+            Session["DonThueXe"] = donthuexe;
+            return View();
         }
 
         [HttpPost]
@@ -257,6 +282,9 @@ namespace Mioto.Controllers
             }
         }
 
+
+
+
         public ActionResult CongratulationPaymentDone()
         {
             if (!IsLoggedIn)
@@ -264,46 +292,68 @@ namespace Mioto.Controllers
             return View();
         }
 
-        // Phương thức để hiển thị trang đánh giá chuyến đi
-        public ActionResult TripReview(string bienSo)
+        // Trang đánh giá chuyến đi
+        public ActionResult TripReview()
         {
-            // Truyền thông tin xe vào ViewBag để hiển thị trong form (nếu cần)
-            ViewBag.BienSo = bienSo;
+            // Lấy thông tin về chuyến đi gần đây của khách hàng để hiển thị (ví dụ: thông tin từ bảng DonThueXe)
+            var customerId = Session["IDKH"] as int?; 
+            var lastTrip = db.DonThueXe
+                             .Where(d => d.IDKH == customerId)
+                             .OrderByDescending(d => d.NgayThue)
+                             .FirstOrDefault();
 
-            // Trả về view với model DanhGia
-            return View(new DanhGia());
+            if (lastTrip == null)
+            {
+                TempData["ErrorMessage"] = "Không tìm thấy chuyến đi gần đây để đánh giá.";
+                return RedirectToAction("TripReview", "Payment");
+            }
+
+            // Tạo đối tượng Đánh giá mới
+            var review = new DanhGia
+            {
+                IDDT = lastTrip.IDTX,
+                Ngay = DateTime.Now
+            };
+
+            return View(review);
         }
 
-        // Phương thức xử lý khi người dùng gửi đánh giá
+        // Xử lý gửi đánh giá
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult SubmitReview(DanhGia review)
+        public ActionResult SubmitReview(DanhGia model)
         {
             if (ModelState.IsValid)
             {
                 try
                 {
-                    // Thêm đánh giá vào cơ sở dữ liệu
-                    review.Ngay = DateTime.Now; // Gán ngày giờ hiện tại cho đánh giá
-                    db.DanhGia.Add(review);
-                    db.SaveChanges();
+                    // Lấy thông tin chuyến đi (DonThueXe) tương ứng với IDDT trong đánh giá
+                    var trip = db.DonThueXe.Find(model.IDDT);
 
-                    // Chuyển hướng đến một trang thông báo sau khi thành công
-                    TempData["SuccessMessage"] = "Đánh giá của bạn đã được gửi thành công!";
-                    return RedirectToAction("Home", "Home");
+                    if (trip != null)
+                    {
+                        // Thêm đánh giá vào cơ sở dữ liệu
+                        db.DanhGia.Add(model);
+                        db.SaveChanges();
+
+                        TempData["SuccessMessage"] = "Đánh giá của bạn đã được gửi thành công!";
+                    }
+                    else
+                    {
+                        TempData["ErrorMessage"] = "Không tìm thấy chuyến đi để đánh giá.";
+                    }
                 }
                 catch (Exception ex)
                 {
-                    // Xử lý lỗi nếu có
-                    TempData["ErrorMessage"] = "Đã xảy ra lỗi khi gửi đánh giá. Vui lòng thử lại.";
-                    return View("TripReview", review);
+                    TempData["ErrorMessage"] = "Có lỗi xảy ra trong quá trình gửi đánh giá. Vui lòng thử lại!";
                 }
+
+                return RedirectToAction("TripReview");
             }
 
-            // Nếu model không hợp lệ, trả về lại view với thông báo lỗi
-            return View("TripReview", review);
+            // Nếu có lỗi trong quá trình xác thực mô hình
+            return View("TripReview", model);
         }
     }
-
 }
 
