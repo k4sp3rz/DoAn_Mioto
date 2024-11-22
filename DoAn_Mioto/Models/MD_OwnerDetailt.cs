@@ -13,5 +13,6 @@ namespace DoAn_Mioto.Models
         public decimal TongTien { get; set; }
         public int TrangThai { get; set; }
         public ChuXe ChuXe { get; set; }
+        public KhachHang KhachHang { get; set; }
     }
 }

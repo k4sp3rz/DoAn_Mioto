@@ -571,19 +571,6 @@ namespace DoAn_Mioto.Controllers
                     // Hủy <= 7 ngày trước chuyến đi
                     hoanTien = 0; // Không hoàn tiền
                 }
-
-                // Lưu thông tin phí hủy chuyến cho khách hàng
-                //var phiHuyChuyen = new PhiHuyChuyen
-                //{
-                //    IDDT = id,
-                //    LoaiHuyChuyen = 1, // Khách hàng
-                //    ThoiGianHuy = (currentDateTime <= bookingDateTime.AddHours(1)) ? 1 : (timeDifference > 7 ? 2 : 3),
-                //    HoanTien = hoanTien,
-                //    DenTien = 0,
-                //    MoTa = "Hủy chuyến do khách hàng yêu cầu."
-                //};
-
-                // db.PhiHuyChuyen.Add(phiHuyChuyen);
             }
             else
             {
@@ -593,13 +580,6 @@ namespace DoAn_Mioto.Controllers
             // Cập nhật trạng thái chuyến đi
             donThueXe.TrangThaiThanhToan = 2; // Hủy chuyến (Đã hủy)
             db.Entry(donThueXe).State = EntityState.Modified;
-
-            // Xóa đơn thuê xe và thanh toán nếu cần
-            var thanhtoan = db.DonThueXe.FirstOrDefault(x => x.IDTX == donThueXe.IDTX);
-            if (thanhtoan != null)
-            {
-                db.DonThueXe.Remove(thanhtoan);
-            }
 
             // Lưu tất cả thay đổi trong một lần
             db.SaveChanges();
@@ -741,18 +721,6 @@ namespace DoAn_Mioto.Controllers
                     denTien = donThueXe.TongTien; // Đền tiền 100%
                 }
 
-                //// Lưu thông tin phí hủy chuyến cho chủ xe
-                //var phiHuyChuyen = new PhiHuyChuyen
-                //{
-                //    IDDT = id,
-                //    LoaiHuyChuyen = 2, // Chủ xe
-                //    ThoiGianHuy = (currentDateTime <= bookingDateTime.AddHours(1)) ? 1 : (timeDifference > 7 ? 2 : 3),
-                //    HoanTien = 0,
-                //    DenTien = denTien,
-                //    MoTa = "Hủy chuyến do chủ xe yêu cầu."
-                //};
-
-                //db.PhiHuyChuyen.Add(phiHuyChuyen);
             }
             else
             {
@@ -760,16 +728,6 @@ namespace DoAn_Mioto.Controllers
             }
 
             db.SaveChanges();
-
-            //// Xóa đơn thanh toán
-            //var thanhtoan = db.DonThueXe.FirstOrDefault(x => x.IDTX == donThueXe.IDTX);
-            //if (thanhtoan != null)
-            //{
-            //    db.DonThueXe.Remove(thanhtoan);
-            //    db.SaveChanges();
-            //}
-
-            // Xóa đơn thuê xe
             donThueXe.TrangThaiThanhToan = 2; // Hủy
             db.Entry(donThueXe.TrangThaiThanhToan).State = EntityState.Modified;
             db.SaveChanges();

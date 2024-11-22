@@ -204,7 +204,7 @@ namespace Mioto.Controllers
 
                     //db.Entry(donThueXe).State = EntityState.Modified;
                     db.DonThueXe.Add(donThueXe);
-                    db.SaveChanges();
+                    //db.SaveChanges();
                 }
 
                 // Cập nhật thông tin thanh toán vào đơn thuê xe

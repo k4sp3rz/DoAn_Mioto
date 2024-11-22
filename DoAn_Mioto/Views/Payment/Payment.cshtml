@@ -96,8 +96,9 @@
         {
             new SelectListItem { Text = "Techcombank: 0123456789", Value = "Techcombank" },
             new SelectListItem { Text = "Momo: 0123456789", Value = "Momo" },
+            new SelectListItem { Text = "VietQR", Value = "vietqr" },
         }, new { @class = "form-control" })
-        <div style="">Chuyển khoản qua các tài khoản sau và chờ nhân viên xác thực thanh toán!</div>
+        <div style="">Chuyển khoản qua các tài khoản sau và chờ nhân viên xác thực thanh toán   !</div>
     </div>
     <div class="line-page"></div>
     <div class="form-group mg-top-m" >
@@ -140,7 +141,7 @@
                         }
                     },
                     error: function () {
-                        alert('Đã xảy ra lỗi.');
+                        alert('Mã giảm giá không hợp lệ!');
                     }
                 });
             });
