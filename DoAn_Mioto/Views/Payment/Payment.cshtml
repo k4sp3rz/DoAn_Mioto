@@ -94,9 +94,10 @@
 
         @Html.DropDownListFor(model => model.PhuongThuc, new List<SelectListItem>
         {
+            new SelectListItem { Text = "VietQR", Value = "vietqr" },
             new SelectListItem { Text = "Techcombank: 0123456789", Value = "Techcombank" },
             new SelectListItem { Text = "Momo: 0123456789", Value = "Momo" },
-            new SelectListItem { Text = "VietQR", Value = "vietqr" },
+            
         }, new { @class = "form-control" })
         <div style="">Chuyển khoản qua các tài khoản sau và chờ nhân viên xác thực thanh toán   !</div>
     </div>
